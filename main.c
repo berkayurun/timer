@@ -9,12 +9,15 @@ void printFinish();
 
 int newTimer = 0;
 int newChro = 0;
+int printMode = 0;
 
 int main(int argc, char *argv[]){
 	int opt;
 	int timeToSet = 0;
+	pid_t pid, sid;
 
-	while((opt = getopt(argc, argv, "hct:")) != -1){
+
+	while((opt = getopt(argc, argv, "bhct:")) != -1){
 		switch(opt){
 		case 'h':
 			printHelp();
@@ -26,14 +29,42 @@ int main(int argc, char *argv[]){
 		case 'c':
 			newChro = 1;
 			break;
+		case 'b':
+			printMode = 1;
+			break;
 		}
 	}
 
-	if(newTimer == 1){
+	if(newTimer == 1 && printMode == 1){
 		printf("Timer set to %i\n", timeToSet);
 		timer(timeToSet);
-	} else if(newChro == 1){
+	} else if(newChro == 1 && printMode =- 1){
 		chronometer();
+	} else if(newTimer == 1) {
+		//https://www.go4expert.com/articles/writing-linux-daemon-process-c-t27616/
+		pid = fork();
+
+		if(pid < 0){
+			exit(EXIT_FAILURE);
+		}
+
+		if(pid > 0){
+			exit(EXIT_SUCCESS);
+		}
+
+		umask(0);
+
+		sid = setsid();
+		if(sid < 0){
+			exit(EXIT_FAILURE);
+		}
+
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
+		close(STDERR_FILENO);
+
+		return(0);
+
 	} else {
 		printHelp();
 	}
@@ -50,6 +81,23 @@ void chronometer(){
 		sleep(1);
 	}
 
+}
+
+//under construction
+//timer works as a deamon
+int timerDaemon(int minutes){
+	int hours;
+	int seconds = minutes * 60;
+
+	while(seconds != 0){
+		if(seconds == 60 || seconds == 300){
+			system();
+		}
+
+		seconds--;
+
+		sleep(1);
+	}
 }
 
 int timer(int minutes){
