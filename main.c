@@ -1,5 +1,7 @@
 #include<stdio.h>
 #include<unistd.h>
+#include<stdlib.h>
+#include "config.h"
 
 void printHelp();
 void printTime();
@@ -17,11 +19,8 @@ int main(int argc, char *argv[]){
 	pid_t pid, sid;
 
 
-	while((opt = getopt(argc, argv, "bhct:")) != -1){
+	while((opt = getopt(argc, argv, "bct:")) != -1){
 		switch(opt){
-		case 'h':
-			printHelp();
-			break;
 		case 't':
 			newTimer = 1;
 			timeToSet = atoi(optarg);
@@ -38,7 +37,7 @@ int main(int argc, char *argv[]){
 	if(newTimer == 1 && printMode == 1){
 		printf("Timer set to %i\n", timeToSet);
 		timer(timeToSet);
-	} else if(newChro == 1 && printMode =- 1){
+	} else if(newChro == 1 && printMode == 1){
 		chronometer();
 	} else if(newTimer == 1) {
 		//https://www.go4expert.com/articles/writing-linux-daemon-process-c-t27616/
@@ -63,6 +62,8 @@ int main(int argc, char *argv[]){
 		close(STDOUT_FILENO);
 		close(STDERR_FILENO);
 
+		timerDaemon(timeToSet);
+
 		return(0);
 
 	} else {
@@ -85,19 +86,35 @@ void chronometer(){
 
 //under construction
 //timer works as a deamon
+//
+//system() will be changed with something better
+//It is being used just to experiment with fork()
+//
+//command defined in config.c and has a structure of
+//"write user [tyy]"
 int timerDaemon(int minutes){
 	int hours;
 	int seconds = minutes * 60;
 
+	//big numbers can cause trouble here!!!
+	//char* secondString = malloc(64);
+	//
 	while(seconds != 0){
-		if(seconds == 60 || seconds == 300){
-			system();
+		if(seconds == 30 || seconds == 60 || seconds == 300){
+			//strcpy(secondString, seconds);
+			system(command);
+			system("Time left:\n");
+			//system(secondString);
 		}
 
 		seconds--;
 
 		sleep(1);
 	}
+
+	system(command);
+	system("Time done!");
+
 }
 
 int timer(int minutes){
@@ -133,7 +150,7 @@ void printTime(int seconds){
 
 void printHelp(){
 	printf("Welcome to Help!\n");
-	printf("-h		Print help\n-t [minutes]	Set timer\n-c 		Start a chronometer\n");
+	printf("-h		Print help\n-t [minutes]	Set timer\n-c 		Start a chronometer\n-b 		Print mode\n");
 }
 
 void printFinish(){
