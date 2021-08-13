@@ -1,8 +1,14 @@
 #include<stdio.h>
 #include<unistd.h>
 #include<stdlib.h>
-#include "config.h"
+#include<string.h>
 
+//Replaced with notify-send
+//#include "config.h"
+
+mode_t umask();
+
+int timerDaemon();
 void printHelp();
 void printTime();
 int timer(int minutes);
@@ -86,25 +92,20 @@ void chronometer(){
 
 //under construction
 //timer works as a deamon
-//
-//system() will be changed with something better
-//It is being used just to experiment with fork()
-//
-//command defined in config.c and has a structure of
-//"write user [tyy]"
 int timerDaemon(int minutes){
 	int hours;
 	int seconds = minutes * 60;
 
-	//big numbers can cause trouble here!!!
-	//char* secondString = malloc(64);
-	//
+    char secLeft[20] = " seconds left!";
+    char command[100], msg[100] = {};
+    strcpy(command, "notify-send ");
+
 	while(seconds != 0){
 		if(seconds == 30 || seconds == 60 || seconds == 300){
-			//strcpy(secondString, seconds);
+			sprintf(msg, "\"Time left: %d seconds!\"", seconds);
+            strcpy(command, "notify-send ");
+            strcat(command, msg);
 			system(command);
-			system("Time left:\n");
-			//system(secondString);
 		}
 
 		seconds--;
@@ -112,8 +113,7 @@ int timerDaemon(int minutes){
 		sleep(1);
 	}
 
-	system(command);
-	system("Time done!");
+	system("notify-send \"Time done!\"");
 
 }
 
