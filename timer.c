@@ -40,12 +40,12 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	if(newTimer == 1 && printMode == 1 && timeToSet != 0){
+	if(newTimer == 1 && printMode == 1){
 		printf("Timer set to %i\n", timeToSet);
 		timer(timeToSet);
 	} else if(newChro == 1 && printMode == 1){
 		chronometer();
-	} else if(newTimer == 1 && timeToSet != 0) {
+	} else if(newTimer == 1) {
 		//https://www.go4expert.com/articles/writing-linux-daemon-process-c-t27616/
 		pid = fork();
 
