@@ -4,7 +4,7 @@ TARGET = timer
 
 .PHONY: all
 all: timer
-timer: timer.c
+timer: src/timer.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: clean
